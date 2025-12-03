@@ -1,137 +1,127 @@
-Real Estate Analytics Data Platform
-Azure Data Factory | Azure SQL | Data Flows | Stored Procedures
-🚀 Project Summary
+# 🏡 Real Estate Analytics Data Platform  
+### **Azure Data Factory | Azure SQL | Data Flows | Stored Procedures**
 
-This project implements a complete cloud-based data warehouse for RealEstateCo.
-It integrates data from multiple CSV sources into a unified Azure SQL-based warehouse using ADF pipelines, Data Flows, and Stored Procedures.
+## 🚀 Project Summary
+This project implements a complete cloud-based **Real Estate Data Warehouse** for *RealEstateCo*.  
+It integrates multiple CSV data sources into an Azure SQL-based warehouse using **Azure Data Factory (ADF)** pipelines, mapping data flows, staging layers, and stored procedures.
 
-🏗 Architecture
-        +----------------------+
-        | Azure Blob Storage   |
-        | Source CSV Files     |
-        +----------+-----------+
-                   |
-                   v
-        +------------------------+
-        | Azure Data Factory     |
-        | copy_all_files Pipeline|
-        +----------+-------------+
-                   |
-                   v
-        +------------------------+
-        | Staging (SQL)          |
-        | stg.* tables           |
-        +----------+-------------+
-                   |
-                   v
-        +------------------------+
-        | Stored Procedure       |
-        | usp_LoadWarehouse      |
-        +----------+-------------+
-                   |
-                   v
-        +------------------------+
-        | Data Warehouse (SQL)   |
-        | Dimensions + Facts     |
-        +------------------------+
+---
 
-🗂 Source Entities
-Agents
-Properties
-Listings
-Campaigns
-Leads
-Offers
-Viewings
-Transactions
+## 🏗 Architecture
 
-🧱 Data Warehouse Schema
-Dimensions
-
-DimAgent
-
-DimProperty
-
-DimListing
-
-DimCampaign
-
-DimDate
-
-DimLead
-
-Fact Tables
-
-FactTransaction
-
-FactOffer
-
-FactViewing
-
-FactLead
-
-🔄 ADF Pipelines
-1️⃣ copy_all_files
-
-Reads all CSV files from Blob
-
-Uses Get Metadata + ForEach
-
-Dynamically loads each into correct staging table
-
-2️⃣ DWH Load Pipeline
-
-Executes Stored Procedure
-
-Loads dimensions (SCD Type 1)
-
-Loads fact tables
-
-Maintains surrogate keys
-
-🔧 Stored Procedure Framework
-
-Master loader:
-
-dwh.usp_LoadWarehouse
+    +----------------------+
+    | Azure Blob Storage   |
+    | Source CSV Files     |
+    +----------+-----------+
+               |
+               v
+    +------------------------+
+    | Azure Data Factory     |
+    | copy_all_files Pipeline|
+    +----------+-------------+
+               |
+               v
+    +------------------------+
+    | Staging (SQL)          |
+    | stg.* tables           |
+    +----------+-------------+
+               |
+               v
+    +------------------------+
+    | Stored Procedure       |
+    | usp_LoadWarehouse      |
+    +----------+-------------+
+               |
+               v
+    +------------------------+
+    | Data Warehouse (SQL)   |
+    | Dimensions + Facts     |
+    +------------------------+
 
 
-Includes:
 
-Dim loaders
+---
 
-Fact loaders
+## 🗂 Source Entities
+- Agents  
+- Properties  
+- Listings  
+- Campaigns  
+- Leads  
+- Offers  
+- Viewings  
+- Transactions  
 
-Reseed identity keys
+---
 
-Re-enable constraints
+## 🧱 Data Warehouse Schema
 
-📊 Analytics Ready
+### **Dimensions**
+- **DimAgent**  
+- **DimProperty**  
+- **DimListing**  
+- **DimCampaign**  
+- **DimDate**  
+- **DimLead**
 
-Power BI dashboards can be created for:
+### **Fact Tables**
+- **FactTransaction**  
+- **FactOffer**  
+- **FactViewing**  
+- **FactLead**
 
-Sales trends
+---
 
-Agent performance
+## 🔄 ADF Pipelines
 
-Marketing impact
+### **1️⃣ copy_all_files**
+- Reads all CSV files from Azure Blob Storage  
+- Uses **Get Metadata + ForEach**  
+- Dynamically identifies file names  
+- Loads each CSV into the correct **staging table (stg.\*)**  
 
-Lead conversions
+### **2️⃣ DWH Load Pipeline**
+- Executes master stored procedure  
+- Loads all **dimensions (SCD Type 1)**  
+- Loads all **fact tables**  
+- Maintains surrogate keys  
+- Rebuilds constraints  
 
-Property pricing trends
+---
 
-👨‍💻 Tech Stack
+## 🔧 Stored Procedure Framework
 
-Azure Data Factory
+### **Master Loader**
+- `dwh.usp_LoadWarehouse`
 
-Azure SQL Database
+### Includes:
+- Dimension loaders  
+- Fact loaders  
+- Identity reseeding  
+- Constraint checks  
+- Merge logic for SCD Type-1 dimensions  
 
-Azure Blob Storage
+---
 
-SSMS
+## 📊 Analytics Ready
 
-Power BI
+Power BI dashboards can be built for:
+- Sales trends  
+- Agent performance  
+- Marketing campaign impact  
+- Lead conversions & funnel analysis  
+- Property pricing trends  
 
-SQL Stored Procedures
+---
 
-Data Flows
+## 👨‍💻 Tech Stack
+- **Azure Data Factory**  
+- **Azure SQL Database**  
+- **Azure Blob Storage**  
+- **SQL Stored Procedures**  
+- **Mapping Data Flows**  
+- **SSMS**  
+- **Power BI**  
+
+---
+
