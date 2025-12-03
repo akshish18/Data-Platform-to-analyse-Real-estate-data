@@ -1,0 +1,119 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_stgagents",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "dim_Transaction",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_stgagents",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "dim_Transaction",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "aggregate2"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     samplecount as integer",
+				"}",
+				"source(output(",
+				"          AgentID as string,",
+				"          AgentName as string,",
+				"          Region as string,",
+				"          City as string,",
+				"          JoinDate as date,",
+				"          ExperienceYears as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: ($samplecount),",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          TransactionID as string,",
+				"          ListingID as string,",
+				"          AgentID as string,",
+				"          PropertyID as string,",
+				"          OfferDate as date,",
+				"          ClosingDate as date,",
+				"          SalePrice as decimal(18,2)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: ($samplecount),",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source1 aggregate(AgentID = count(AgentID)) ~> aggregate1",
+				"source2 aggregate(TransactionID = count(PropertyID)) ~> aggregate2",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          AgentID as string,",
+				"          AgentName as string,",
+				"          Region as string,",
+				"          City as string,",
+				"          JoinDate as date,",
+				"          ExperienceYears as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"aggregate2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          TransactionID as string,",
+				"          ListingID as string,",
+				"          AgentID as string,",
+				"          PropertyID as string,",
+				"          OfferDate as date,",
+				"          ClosingDate as date,",
+				"          SalePrice as decimal(18,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}

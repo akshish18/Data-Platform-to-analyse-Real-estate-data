@@ -1,0 +1,9 @@
+{
+	"name": "adfrealestate",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "83e11ca5-c8f9-4b10-ae84-df44540c2dfb",
+		"tenantId": "cbd57ebc-a874-4319-a200-a6acb2c415ad"
+	}
+}

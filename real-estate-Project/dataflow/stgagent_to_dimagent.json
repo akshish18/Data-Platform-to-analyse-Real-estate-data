@@ -1,0 +1,102 @@
+{
+	"name": "stgagent_to_dimagent",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_stgagents",
+						"type": "DatasetReference"
+					},
+					"name": "stgagent"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_dwh_dimagent",
+						"type": "DatasetReference"
+					},
+					"name": "dimagent"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_dwh_dimagent",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AlterRow1"
+				},
+				{
+					"name": "lookup1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          AgentID as string,",
+				"          AgentName as string,",
+				"          Region as string,",
+				"          City as string,",
+				"          JoinDate as date,",
+				"          ExperienceYears as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: 500,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> stgagent",
+				"source(output(",
+				"          AgentSK as integer,",
+				"          AgentID as string,",
+				"          AgentName as string,",
+				"          Region as string,",
+				"          City as string,",
+				"          JoinDate as date,",
+				"          ExperienceYears as integer,",
+				"          EffectiveFrom as timestamp,",
+				"          EffectiveTo as timestamp,",
+				"          IsActive as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: 500,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> dimagent",
+				"lookup1 alterRow(insertIf(isNull(stgagent@AgentID)),",
+				"     updateIf(!isNull(stgagent@AgentID)&&(stgagent@AgentName!=dimagent@AgentName||stgagent@Region!=dimagent@Region||stgagent@City!=dimagent@City||stgagent@JoinDate!=dimagent@JoinDate||stgagent@ExperienceYears!=dimagent@ExperienceYears))) ~> AlterRow1",
+				"stgagent, dimagent lookup(stgagent@AgentID == dimagent@AgentID,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"AlterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          AgentSK as integer,",
+				"          AgentID as string,",
+				"          AgentName as string,",
+				"          Region as string,",
+				"          City as string,",
+				"          JoinDate as date,",
+				"          ExperienceYears as integer,",
+				"          EffectiveFrom as timestamp,",
+				"          EffectiveTo as timestamp,",
+				"          IsActive as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['AgentID'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

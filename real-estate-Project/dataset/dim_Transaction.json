@@ -1,0 +1,48 @@
+{
+	"name": "dim_Transaction",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sql_raw",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TransactionID",
+				"type": "varchar"
+			},
+			{
+				"name": "ListingID",
+				"type": "varchar"
+			},
+			{
+				"name": "AgentID",
+				"type": "varchar"
+			},
+			{
+				"name": "PropertyID",
+				"type": "varchar"
+			},
+			{
+				"name": "OfferDate",
+				"type": "date"
+			},
+			{
+				"name": "ClosingDate",
+				"type": "date"
+			},
+			{
+				"name": "SalePrice",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "Transactions"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
